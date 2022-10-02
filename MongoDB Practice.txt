@@ -1,0 +1,456 @@
+Structure of 'restaurants' collection:
+
+{
+  "address": {
+     "building": "1007",
+     "street": "HighStreet",
+     "zipcode": "TW31HA"
+  },
+  "borough": "Hounslow",
+  "cuisine": "Bakery",
+  "Orders": [
+     { "date": { "$date": 1393804800000 }, "rating": "A", "stars": 2 },
+     { "date": { "$date": 1378857600000 }, "rating": "A", "stars": 6 },
+     { "date": { "$date": 1358985600000 }, "rating": "A", "stars": 10 },
+     { "date": { "$date": 1322006400000 }, "rating": "C", "stars": 9 },
+     { "date": { "$date": 1299715200000 }, "rating": "B", "stars": 14 }
+  ],
+  "name": "Just Bake Shop",
+  "restaurant_id": "5075445"
+}
+
+db.restaurants.insertMany([
+{
+  "address": {
+     "building": "1007",
+     "street": "HighStreet",
+     "zipcode": "TW31HA"
+  },
+  "borough": "Hounslow",
+  "cuisine": "Bakery",
+  "Orders": [
+     { "date": { "$date": 1393804800000 }, "rating": "A", "stars": 2 },
+     { "date": { "$date": 1378857600000 }, "rating": "A", "stars": 6 },
+     { "date": { "$date": 1358985600000 }, "rating": "A", "stars": 10 },
+     { "date": { "$date": 1322006400000 }, "rating": "C", "stars": 9 },
+     { "date": { "$date": 1299715200000 }, "rating": "B", "stars": 14 }
+  ],
+  "name": "Just Bake Shop",
+  "restaurant_id": "5075445"
+}
+
+]
+)
+
+1. Write a MongoDB query to display all the documents in the collection restaurants.
+db.restaurants.find()
+2. Write a MongoDB query to display the fields restaurant_id, name, borough and cuisine for all the documents in the collection restaurant.
+db.restaurants.find({},{restaurant_id:1, name:1, borough:1,cuisine:1})
+3. Write a MongoDB query to display the fields restaurant_id, name, borough and cuisine, but exclude the field _id for all the documents in the collection restaurant.
+db.restaurants.find({},{restaurant_id:1, name:1, borough:1 ,cuisine:1, _id:0})
+4. Write a MongoDB query to display the fields restaurant_id, name, borough and zip code, but exclude the field _id for all the documents in the collection restaurant.
+db.restaurants.find({},{restaurant_id:1, name:1, borough:1 ,zipcode:1,_id:0})
+5. Write a MongoDB query to display all the restaurant which is in the borough Harrow.
+db.restaurants.find({"borough":"Hounslow"}).pretty()
+6. Write a MongoDB query to display the first 5 restaurant which is in the borough Croydon.
+db.restaurants.find({"borough": "Croydon"}).limit(5).pretty()
+7.Write a MongoDB query to display the next 5 restaurants after skipping first 5 which are in the borough Hounslow. 
+db.restaurants.find({"borough": "Hounslow"}).skip(5).limit(5);
+8. Write a MongoDB query to find the restaurants who achieved a score more than 90.
+
+db.restaurants.find({"Orders.stars": {$gt : 9}})
+
+9. Write a MongoDB query to find the restaurants that achieved a score, more than 80 but less than 100. 
+db.restaurants.find($and:[{"Orders.stars": {$gt : 8}},{"Orders.stars": {$lt : 20}}]);
+
+db.restaurants.find({$and:[
+{
+"Orders.stars": {$gt : 9}
+},
+{
+"Orders.stars": {$lt : 20}
+}
+]}).pretty();
+
+10. Write a MongoDB query to find the restaurants which locate in Hounslow.
+db.restaurants.find({"borough": "Hounslow"}).pretty();
+ 
+
+11. Write a MongoDB query to find the restaurants that do not prepare any cuisine of 'American' and their grade star more than 70 and located in Harrow.
+db.restaurants.find({$and:[
+{"borough": "Hounslow"
+},
+{
+"Orders.stars": {$gt : 9}
+},
+{
+"Orders.stars": {$lt : 20}
+}
+]}).pretty();
+ 
+
+12. Write a MongoDB query to find the restaurants which do not prepare any cuisine of 'American' and achieved a score more than 70 and and located in Harrow..
+Note : Do this query without using $and operator
+
+13. Write a MongoDB query to find the restaurants which do not prepare any cuisine of 'American ' and achieved a grade point 'A' not belongs to the borough Brooklyn. The document must be displayed according to the cuisine in descending order.
+ db.restaurants.find({"cuisine" : {$ne : "American "},"Orders.rating" :"A","borough": {$ne : "Brooklyn"}}).sort({"cuisine":-1});
+
+14. Write a MongoDB query to find the restaurant Id, name, borough and cuisine for those restaurants which contain 'Wil' as first three letters for its name.
+db.restaurants.find({name: /^Wil/},{"restaurant_id":1,"name":1,"borough":1,"cuisine" :1});
+15. Write a MongoDB query to find the restaurant Id, name, borough and cuisine for those restaurants which contain 'ces' as last three letters for its name.
+db.restaurants.find({name: /ces$/},{"restaurant_id":1,"name":1,"borough":1,"cuisine" :1});
+16. Write a MongoDB query to find the restaurant Id, name, borough and cuisine for those restaurants which contain 'Reg' as three letters somewhere in its name.
+db.restaurants.find({name: /.Reg./},{"restaurant_id":1,"name":1,"borough":1,"cuisine" :1});
+17. Write a MongoDB query to find the restaurants which belong to the borough Hounslow and prepared either American or Chinese 
+db.restaurants.find({ "borough": "Hounslow" , $or : [{ "cuisine" : "American " },{ "cuisine" : "Chinese" }]});
+18. Write a MongoDB query to find the restaurant Id, name, borough and cuisine for those restaurants which belong to the borough Windsor or Harrow or WestMinister. 
+db.restaurants.find({"borough" :{$in :["Windsor" , "Harrow" , "WestMinister"]}},{"restaurant_id":1,"name":1,"borough":1,"cuisine" :1});
+19. Write a MongoDB query to find the restaurant Id, name, borough and cuisine for those restaurants which are not belonging to the borough Harrow or Hounslow or Ealing.
+db.restaurants.find({"borough" :{$nin :["borough" , "Harrow","Hounslow","Ealing"]}},{"restaurant_id" : 1,"name":1,"borough":1,"cuisine" :1});
+20. Write a MongoDB query to find the restaurant Id, name, borough and cuisine for those restaurants which achieved a score which is not more than 10. 
+db.restaurants.find({"Orders.stars" : { $not: {$gt : 10}}})
+21. Write a MongoDB query to find the restaurant Id, name, borough and cuisine for those restaurants which prepared dish except 'American' and 'Chinees' or restaurant's name begins with letter 'Wil'.
+db.restaurants.find({$or:[{name: /^Wil/},{"$and":[{"cuisine":{$ne:"American"}},{"cuisine":{$ne:"Chinees"}}]}]}
+22. Write a MongoDB query to find the restaurant Id, name, and grades for those restaurants which achieved a grade of "A" and scored 11 on an ISODate "2014-08-11T00:00:00Z" among many of survey dates.
+db.restaurants.find( {"Orders.date": ISODate("2014-08-11T00:00:00Z"),"Orders.rating":"A","rating.stars" : 11},{"restaurant_id" : 1,"name":1,"rating":1});
+23. Write a MongoDB query to find the restaurant Id, name and grades for those restaurants where the 2nd element of grades array contains a grade of "A" and score 9 on an ISO Date "2014-08-11T00:00:00Z". 
+db.restaurants.find( {"Orders.date": ISODate("2014-08-11T00:00:00Z"),"Orders.rating":"A","rating.1.star" : 9},{"restaurant_id" : 1,"name":1,"rating":1});
+24. Write a MongoDB query to find the restaurant Id, name, address and geographical location for those restaurants where 2nd element of coord array contains a value which is more than 42 and upto 52.
+
+25. Write a MongoDB query to arrange the name of the restaurants in ascending order along with all the columns.
+db.restaurants.find().sort({"name":1});
+26. Write a MongoDB query to arrange the name of the restaurants in descending along with all the columns.
+db.restaurants.find().sort({"name":-1});
+27. Write a MongoDB query to arranged the name of the cuisine in ascending order and for that same cuisine borough should be in descending order.on
+db.restaurants.find().sort({"cuisine":1,"borough" : -1,});
+28. Write a MongoDB query to know whether all the addresses contains the street or not.
+db.restaurants.find({"address.street":{ $exists : true }});
+29. Write a MongoDB query which will select all documents in the restaurants collection where the coord field value is Double.
+
+30. Write a MongoDB query which will select the restaurant Id, name and grades for those restaurants which returns 0 as a remainder after dividing the score by 7. 
+
+31. Write a MongoDB query to find the restaurant name, borough, longitude and attitude and cuisine for those restaurants which contains 'mon' as three letters somewhere in its name.
+
+32. Write a MongoDB query to find the restaurant name, borough, longitude and latitude and cuisine for those restaurants which contain 'Mad' as first three letters of its name.
+
+================================================================================================
+To complete practice, use two collections. The first is called 'universities' and is made up of these document:
+
+{
+  country : 'Spain',
+  city : 'Salamanca',
+  name : 'USAL',
+  location : {
+    type : 'Point',
+    coordinates : [ -5.6722512,17, 40.9607792 ]
+  },
+  students : [
+    { year : 2014, number : 24774 },
+    { year : 2015, number : 23166 },
+    { year : 2016, number : 21913 },
+    { year : 2017, number : 21715 }
+  ]
+},
+{
+  country : 'Spain',
+  city : 'Salamanca',
+  name : 'UPSA',
+  location : {
+    type : 'Point',
+    coordinates : [ -5.6691191,17, 40.9631732 ]
+  },
+  students : [
+    { year : 2014, number : 4788 },
+    { year : 2015, number : 4821 },
+    { year : 2016, number : 6550 },
+    { year : 2017, number : 6125 }
+  ]
+}
+
+db.universities.insertMany[{
+  country : 'Spain',
+  city : 'Salamanca',
+  name : 'USAL',
+  location : {
+    type : 'Point',
+    coordinates : [ -5.6722512,17, 40.9607792 ]
+  },
+  students : [
+    { year : 2014, number : 24774 },
+    { year : 2015, number : 23166 },
+    { year : 2016, number : 21913 },
+    { year : 2017, number : 21715 }
+  ]
+},
+{
+  country : 'Spain',
+  city : 'Salamanca',
+  name : 'UPSA',
+  location : {
+    type : 'Point',
+    coordinates : [ -5.6691191,17, 40.9631732 ]
+  },
+  students : [
+    { year : 2014, number : 4788 },
+    { year : 2015, number : 4821 },
+    { year : 2016, number : 6550 },
+    { year : 2017, number : 6125 }
+  ]
+}
+]
+
+The second is called 'courses' and looks like this:
+
+{
+  university : 'USAL',
+  name : 'Computer Science',
+  level : 'Excellent'
+},
+{
+  university : 'USAL',
+  name : 'Electronics',
+  level : 'Intermediate'
+},
+{
+  university : 'USAL',
+  name : 'Communication',
+  level : 'Excellent'
+}
+
+
+db.courses.insertMany[{
+  university : 'USAL',
+  name : 'Computer Science',
+  level : 'Excellent'
+},
+{
+  university : 'USAL',
+  name : 'Electronics',
+  level : 'Intermediate'
+},
+{
+  university : 'USAL',
+  name : 'Communication',
+  level : 'Excellent'
+}
+]
+
+1.Write a MongoDB query to find those documents which specify that Spain is the value of the field country, and Salamanca is the value of the field city.
+
+db.universities.find({$and:[
+{
+country : "Spain"
+},
+{
+city : "Salamanca"
+}
+]}).pretty();
+
+
+2.Write a MongoDB query to find all documents with the fields country, city and name
+
+db.universities.find({},{country:1,city:1,name:1})
+
+3.Write a MongoDB query to find the number of documents per university in our ‘universities’ collection.
+db.universities.count()
+
+4. Write a MongoDB query to sort documents based on number of students in descending order.
+db.universities.find().sort({number:-1});
+
+5. Write a MongoDB query to find first two results of your query.
+db.universities.find().limit(2).pretty();
+
+=================================================================================================
+ Create database EMP and Make Collection With name "EMPL" and Follow Queries 
+
+=>Created Database
+> use emp
+ switched to DB emp
+ 
+=>Create Collection
+> db.createCollection("empl")
+
+=>Insert Records Into EMPL Collection
+> db.empl.insert([
+ {no:1,name:"ST",salary:2000,role:"OB"},
+ {no:2,name:"MSD",salary:1500,role:"WK"},
+ {no:3,name:"YS",salary:1000,role:"ALR"},
+ {no:4,name:"RD",salary:1000,role:"MOB"},
+ {no:5,name:"RS",salary:500,role:"OB"},
+ {no:6,name:"BK",salary:500,role:"MOB"},
+ {no:7,name:"VK",salary:300,role:"BW"},
+ {no:8,name:"JB",salary:400,role:"BW"},
+ {no:9,name:"HP",salary:400,role:"ALR"},
+ {no:10,name:"VS",salary:300,role:"OB"}])
+
+=>Display Data in Proper Format 
+db.empl.find().pretty();
+
+
+=>Update Salary Of Employee where Name is "ST" by +8000
+db.empl.updateMany({name:"ST"},{$inc:{salary:8000}});
+
+=>Update Salary Of All Employee by giving an increment of +4000 each
+db.empl.updateMany({},{$inc:{salary:4000}});
+
+=>update role of "MSD" as "C and WK"
+db.empl.updateMany({"name":"ST"},{$set:{"role":"C and WK"}});
+
+=>Add a New Field remark to document with name "RS" set Remark as WC
+db.empl.updateMany({"name":"RS"},{$set:{"remark":"WC"}});
+
+=>Add a New Field As Number 11,name AK,Salary 10000,role coch without using insert statement. But for Doing So You should have a Record Added woth number 11.
+db.empl.update({no:11},{$set:{no:11,name:"AK",salary:10000,role:"coch"}},{upsert:true});
+
+=>remove added New Field
+db.empl.update({name:"RD"},{$unset:{remark:"WC"}});
+
+=>Update the Field "RD" by multiplying with salary by 2
+db.empl.update({name:"RD"},{$mul:{salary:2}});
+
+=>To Find Document From the empl collection where name begins with S
+db.empl.find({name:/^S/});
+
+=>To Find Document From the empl collection where name begins with R
+db.empl.find({name:/R$/});
+
+=>To Find Document From the empl collection where name ends with K
+db.empl.find({name:/K$/});
+
+=>To Find Document From the empl collection where name ends with D
+db.empl.find({name:/D$/});
+
+
+=>To Find Document From the empl collection where name has S in any position
+db.empl.find({name:/S/});
+
+(Hint for above queries: Regular Expressions and Use Case sensitive allow For that write in Option: "i")
+
+=> To Find Document From the empl collection where name begins with S
+db.empl.find({name:{$regex:"^S"}});
+
+=> To Find Document From the empl collection where name begins with S
+db.empl.find({name:{$regex:"S",$options:"i"}});
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+ Use of $in and $nin (in and notin)
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+(Note: There will not use {} braces in that $in and $nin)
+
+=> Display Documents where in empl collection Field have OB,MOB 
+db.empl.find({role:{$in:["OB","MOB"]}});
+
+=> Display Documents where in empl collection Field not have OB,MOB
+db.empl.find({role:{$nin:["OB","MOB"]}});
+
+============================================================================
+Collections and Documents
+Collections are like tables in SQL databases. Initialising a collection is also happening lazily like this:
+
+> db.Student.insert({name: 'alex'})
+
+Now if we run again show dbs after we create a collection with a document we will see that the database appears in the list. This is because at the moment that we inserted this document, the document was created, which in turn created the collection which in turn created the database.
+
+1.Insert a new student with name: Mary
+
+> db.Student.insert({name: 'Mary'})
+
+2.Insert a new student with name: Madeline and id=2 (integer)
+
+> db.Student.insert({_id: 2,name: 'Madeline'})
+
+
+3.Insert a new student with name: Steve, midterm score of 80 and final score of 100
+Scores should be embedded in a sub-document like this:
+
+scores:
+{
+  midterm: 0,
+  final: 0
+}
+db.Student.insert({name: 'Steve',scores:
+{
+  midterm: 80,
+  final: 100
+}})
+
+4.Finding a document by a student name
+db.Student.find( { name: 'Steve' } )
+
+
+5.Querying embedded attributes:
+Finding all documents by a student midterm scores greater than 75.
+
+db.Student.find({"scores.midterm": {"$gt": 75}})
+
+
+6.AND / OR queries:
+a)Finding all documents by a student midterm scores greater than 75 AND final scores greater than 80.
+
+db.Student.find({$and:[
+{
+"scores.midterm": {"$gt": 75}
+},
+{
+"scores.final": {"$gt": 80}
+}
+]}).pretty();
+
+
+b)Finding all documents by a student midterm scores greater than 75 OR final scores greater than 80.
+db.Student.find({$or:[
+{
+"scores.midterm": {"$gt": 75}
+},
+{
+"scores.final": {"$gt": 80}
+}
+]}).pretty();
+
+7. Find all students that have scored between [50,80) in midterm AND [80,100] in final exam
+db.Student.find({$and:[
+{
+"scores.midterm": {"$in": [50,80]}
+},
+{
+"scores.final": {"$in": [80,100]}
+}
+]}).pretty();
+
+Updating Documents
+===================
+Updating documents has 2 parts. The first one is finding the document(s) we want to update and the second one is modifying their values.
+
+8. REPLACE the first instance of document matching {name:'Rama'} with the new {name:'Ram Raj'} !!!!
+db.Student.updateMany(
+{ "name" : "Rama"},
+{ $set:{"name" : "Ram Raj"}},
+{upsert : true}
+ )
+
+9.Update the student Raju  midterm score to 50 and final score to 100 respectively.
+db.Student.updateMany(
+{ "name" : "Raju"},
+{ $set:{"scores.midterm" : 50,"scores.final" : 100}},
+{upsert : true}
+ )
+
+10.Update the grades of all students to be 90
+db.Student.updateMany(
+{},
+{ $set:{"grades" : 90}},
+{upsert : true}
+ )
+
+
+Deleting documents
+==================
+11. Deleting a whole collection
+db.Student.deleteMany({})
+12. Deleting a single document whose name is 'Raju'
+ db.Student.deleteOne( { "name" : "Raju"})
+
+
+
+13. Delete all students with midterm score less than 80
+db.Student.deleteMany({"scores.midterm": {"$lt": 80}})
+14. 
